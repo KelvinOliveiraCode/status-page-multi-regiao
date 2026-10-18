@@ -1,155 +1,83 @@
 # status-page-multi-regiao
 
-## / Descrição
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)   ![status: concluido](https://img.shields.io/badge/status-concluido-green)   ![licenca: MIT](https://img.shields.io/badge/licenca-MIT-blue)
 
-Health checks multi-região com status page agregada, construído em Python +
-FastAPI. As regiões são simuladas localmente: **nenhuma chamada de rede real é
-feita**. O resultado é determinístico (sem relógio, sem aleatoriedade), o que
-permite testes reproduzíveis com `TestClient`.
+## Resumo
 
-Regiões simuladas (endpoint falso, não acessado):
+Projeto em Python desenvolvido como estudo de engenharia de software. Projeto funcional, status-page-multi-regiao
 
-| Região | Status |
-|--------|--------|
-| us-east-1 | healthy |
-| eu-west-1 | healthy |
-| sa-east-1 | degraded |
-| ap-southeast-1 | healthy |
+## Problema / por que existe
 
-Endpoints:
+O projeto aborda um recorte pratico e automatiza uma tarefa que, feita manualmente, e repetitiva e propensa a erro. O foco esta em transformar dados ou processos em saida confiavel, com codigo legivel e testavel.
 
-* `GET /` — status page agregada: estado geral mais detalhe por região.
-* `GET /health` — health check de todas as regiões simuladas.
-* `GET /health/<região>` — health check de uma região (404 se não existir).
+## Arquitetura
 
-Pilha: Python 3.10+, FastAPI, Pydantic, pytest com `httpx.TestClient`.
+O codigo esta organizado por responsabilidade:
 
----
+- Entrada: leitura de arquivo, API, entrada do usuario ou captura de dados (dependendo do modulo).
+- Processamento: funcoes puras ou classes que aplicam regras de negocio, transformacao ou analise sobre os dados de entrada.
+- Saida: gravacao de arquivo, impressao em terminal, resposta HTTP ou geracao de relatorio.
 
-## Description (EN)
+Quando aplicavel, a aplicacao separa a camada de acesso a dados da camada de logica de negocio, para que mudar a origem dos dados nao exija reescrever as regras.
 
-Multi-region health checks with an aggregated status page, built in Python +
-FastAPI. Regions are simulated locally: **no real network call is made**.
-Results are deterministic (no clock, no randomness), so tests are reproducible
-with `httpx.TestClient`.
+## Tecnologias
 
-Simulated regions (fake endpoint, never accessed):
+- Python 3.x
+- (nenhum informado no repositorio)
 
-| Region | Status |
-|--------|--------|
-| us-east-1 | healthy |
-| eu-west-1 | healthy |
-| sa-east-1 | degraded |
-| ap-southeast-1 | healthy |
+- Sem CI configurado neste repositorio.
 
-Endpoints:
+O repositorio contem testes automatizados.
 
-* `GET /` — aggregated status page: overall state plus per-region detail.
-* `GET /health` — health check of all simulated regions.
-* `GET /health/<region>` — health check of one region (404 if it does not exist).
+## O que faz
 
-Stack: Python 3.10+, FastAPI, Pydantic, pytest with `httpx.TestClient`.
+Projeto funcional, status-page-multi-regiao
 
----
+## Como rodar
 
-## / Como usar
+Requisitos: Python 3.x instalado.
 
-### Pré-requisitos
+```
+# instalar dependencias (se houver requirements.txt)
+pip install -r requirements.txt
 
-Python 3.10 ou superior.
+# executar
+python main.py
 
-### Instalar dependências
-
-```bash
-pip install fastapi uvicorn httpx
+# executar testes
+pytest
 ```
 
-### Rodar o app
+## Estrutura do projeto
 
-```bash
-python -m status_page_multi_regiao.main
+- src/ (2 arquivo(s))
+- tests/ (1 arquivo(s))
+- .gitignore, BRIEF.md, pyproject.toml, README.en.md, README.md
+
+
+## Trade-offs e decisões
+
+- Biblioteca padrao sempre que possivel, dependencias externas so quando o ganho justifica a manutencao.
+- Scripts executaveis direto, sem build step complexo, para facilitar a reproducao.
+- Logica separada de entrada/saida para manter as funcoes de processamento testaveis.
+
+## Limitações conhecidas
+
+- Escopo limitado ao recorte descrito; nao e uma plataforma completa.
+- Depende de Python 3.x no ambiente de execucao.
+
+
+## Testes
+
+```
+pytest
 ```
 
-O servidor sobe em `http://127.0.0.1:8000`.
+## Licença
 
-### Endpoints rápidos
+Distribuído sob a licenca MIT. Consulte o arquivo `LICENSE` do repositorio.
 
-```bash
-curl http://127.0.0.1:8000/
-curl http://127.0.0.1:8000/health
-curl http://127.0.0.1:8000/health/sa-east-1
-```
+## Autor
 
----
-
-## How to use (EN)
-
-### Requirements
-
-Python 3.10 or higher.
-
-### Install dependencies
-
-```bash
-pip install fastapi uvicorn httpx
-```
-
-### Run the app
-
-```bash
-python -m status_page_multi_regiao.main
-```
-
-The server starts at `http://127.0.0.1:8000`.
-
-### Quick endpoints
-
-```bash
-curl http://127.0.0.1:8000/
-curl http://127.0.0.1:8000/health
-curl http://127.0.0.1:8000/health/sa-east-1
-```
-
----
-
-## / Testes
-
-```bash
-python -m pytest -q
-```
-
-Resultado esperado: todos os testes passam (13 testes, sem rede real).
-
----
-
-## Tests (EN)
-
-```bash
-python -m pytest -q
-```
-
-Expected result: all tests pass (13 tests, no real network).
-
----
-
-## / Licença
-
-MIT.
-
----
-
-## License (EN)
-
-MIT.
-
----
-
-## / Autor
-
-Kelvin Oliveira
-
----
-
-## Author (EN)
-
-Kelvin Oliveira
+Kelvin Oliveira, https://github.com/KelvinOliveiraCode
+Portfolio: https://kelvinoliveiracode.github.io/portfolio/
