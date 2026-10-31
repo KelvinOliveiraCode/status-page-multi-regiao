@@ -1,118 +1,95 @@
 # status-page-multi-regiao
 
-<div align="center">
-
 **English** · [Português (Brasil)](README.md)
 
-</div>
-
-[![Python 3](https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/) [![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikit-learn)](https://scikit-learn.org/) [![pandas](https://img.shields.io/badge/pandas-150458?style=flat-square&logo=pandas)](https://pandas.pydata.org/) [![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=flat-square&logo=pytest)](https://docs.pytest.org/) [![MIT License](https://img.shields.io/badge/License-MIT-f4c430?style=flat-square)](LICENSE)
-
-### Projeto funcional ,  status-page-multi-regiao
-
----
+[![Python 3](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](#) [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?style=flat-square&logo=fastapi)](#) [![pytest](https://img.shields.io/badge/pytest-13%20tests-0A9EDC?style=flat-square&logo=pytest)](#) [![MIT License](https://img.shields.io/badge/License-MIT-f4c430?style=flat-square)](LICENSE)
 
 ## What it is
 
-Projeto funcional ,  status-page-multi-regiao
+**A multi-region status page**: a **FastAPI API** that checks the health of several regions (simulated checks with `httpx`), aggregates the overall state (`compute_overall`) and exposes a **status page** in JSON — in the style of public status pages (e.g. status.openai.com). It is an educational SRE/observability lab.
 
----
+## Status
 
-## Quick Start
+An educational lab, working and tested (13 tests).
 
-```bash
-# Clone and enter
-git clone https://github.com/KelvinOliveiraCode/<repo>.git
-cd <repo>
+## Features
 
-# Install dependencies
-# No requirements.txt detected
+- **Per-region check** (`check_region`): a `RegionHealth` with the state per region (up/degraded/down).
+- **Aggregation** (`compute_overall`): the worst state among the regions becomes the overall state.
+- **Status page** (`build_status_page`/`status_page`): a `StatusPage` with all regions.
+- **Endpoints** (FastAPI):
+  - `GET /` — the full status page (`StatusPage`).
+  - `GET /health` — all regions' health (`Dict[str, RegionHealth]`).
+  - `GET /health/{region}` — a specific region's health.
+- **Real HTTP checks**: uses `httpx` to probe target URLs per region.
 
-# Run the project
-python main.py
+## Architecture
 
-# Run tests
-pytest
+A `status_page_multi_regiao` package in `main.py`: check/aggregation logic + the FastAPI app (routes `GET /`, `/health`, `/health/{region}`).
+
+```mermaid
+flowchart LR
+    REG[target regions] --> CHK[check_region - httpx]
+    CHK --> AGG[compute_overall - worst state]
+    AGG --> SP[build_status_page]
+    API[FastAPI] -->|"GET / · /health · /health/{region}"| SP
 ```
 
-## How it works
+## Stack
 
-Estrutura limpa e modular com separação de responsabilidades.
+- Python ≥ 3.10
+- FastAPI ≥ 0.100, httpx ≥ 0.24, uvicorn ≥ 0.23
+- pytest (dev)
 
----
+## Repository layout
 
-## Capabilities
+```
+status-page-multi-regiao/
+├── pyproject.toml · BRIEF.md
+├── src/status_page_multi_regiao/
+│   └── main.py      # checks + aggregation + FastAPI
+├── tests/           # 13 tests
+└── LICENSE          # MIT
+```
 
-| Capacidade | Descrição |
-|------------|-------------|
-| Carregamento de Dados | Auto-download do TensorFlow creditcard.csv (284k transações) com cache local |
-| EDA e Visualização | Distribuição de classes, histogramas de Amount, heatmaps de correlação (matplotlib/seaborn) |
-| Pré-processamento | RobustScaler em Amount/Time, split estratificado, remoção de duplicatas |
-| Balanceamento | SMOTE oversampling (fallback: class_weight="balanced") |
-| Modelagem | LogisticRegression, RandomForest, ExtraTrees com RandomizedSearchCV (StratifiedKFold) |
-| Métricas | Accuracy, Precision, Recall, F1, ROC AUC, Specificity, Confusion Matrix |
-| Seleção | Score ponderado: Recall 40% + F1 30% + Precision 20% + Accuracy 10% |
-| Persistência | Serialização joblib para modelo, scaler e resultados completos |
+## Prerequisites and installation
 
+```bash
+pip install -e .
+```
 
----
+## How to run
 
+```bash
+uvicorn status_page_multi_regiao.main:app --reload
+# status page: http://localhost:8000/
+# per-region health: http://localhost:8000/health and /health/{region}
+```
 
+## Tests and quality
 
----
+Real command (verified by the agent):
 
-## FAQ
+```bash
+PYTHONPATH=src python -m pytest tests/
+# 13 passed
+```
 
-<details>
-<summary><strong>What is this project?</strong></summary>
+## Technical decisions and trade-offs
 
-A Python study/project demonstrating core concepts.
+- **Worst state wins** (`compute_overall`): the standard status-page rule — a degraded region degrades the whole.
+- **FastAPI + Pydantic**: typed response contracts (`StatusPage`, `RegionHealth`).
+- **httpx for probes**: a modern HTTP client with async support.
 
-</details>
+## Known limitations and roadmap
 
-<details>
-<summary><strong>How do I run it?</strong></summary>
+- Regions/targets are fixed examples in the code; no external configuration (YAML/ENV).
+- No persisted history or incident window (not a full Statuspage/UptimeRobot).
 
-See [Quick Start](#quick-start) for copy-paste commands.
+## Development process
 
-</details>
+An individual project by Kelvin Oliveira, built with orchestrated AI agents and reviewed by the author.
 
-<details>
-<summary><strong>Are there tests?</strong></summary>
+## License and author
 
-No automated tests in this repository.
-
-</details>
-
-<details>
-<summary><strong>Can I use this in production?</strong></summary>
-
-This is a **study/portfolio project**. Review and harden (auth, persistence, monitoring, etc.) before production use.
-
-</details>
-
-
-
----
-
-## Documentation
-
-- **Source Code** ,  Browse the `src/` directory for implementation details
-- **API Reference** ,  Inline docstrings + type hints
-- **Architecture Diagram** ,  See [architecture.mermaid](docs/architecture.mermaid) (if present)
-- **Changelog** ,  [CHANGELOG.md](CHANGELOG.md) (if present)
-- **Contributing** ,  [CONTRIBUTING.md](CONTRIBUTING.md) (if present)
-
-## License
-
-[MIT](LICENSE) ,  Kelvin Oliveira
-
----
-
-<div align="center">
-
-**Built with** · Python 3 + scikit-learn + pandas
-
-**Author** · [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfolio](https://kelvinoliveiracode.github.io/portfolio/)
-
-</div>
+MIT — Copyright (c) 2026 Kelvin Rebelo de Oliveira. Author: [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfolio](https://kelvinoliveiracode.github.io/portfolio/)
