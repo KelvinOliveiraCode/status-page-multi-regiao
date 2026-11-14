@@ -6,7 +6,7 @@
 
 ## O que é
 
-**Status page multi-região**: uma **API FastAPI** que verifica a saúde de várias regiões (verificações simuladas com `httpx`), agrega o estado geral (`compute_overall`) e expõe uma **página de status** em JSON — estilo status pages públicas (ex.: status.openai.com). É um laboratório educacional de SRE/observabilidade.
+**Status page multi-região**: uma **API FastAPI** que verifica a saúde de várias regiões (verificações simuladas com `httpx`), agrega o estado geral (`compute_overall`) e expõe uma **página de status** em JSON, estilo status pages públicas (ex.: status.openai.com). É um laboratório educacional de SRE/observabilidade.
 
 ## Status
 
@@ -18,10 +18,10 @@ Laboratório educacional funcional e testado (13 testes).
 - **Agregação** (`compute_overall`): pior estado entre as regiões vira o estado geral.
 - **Página de status** (`build_status_page`/`status_page`): `StatusPage` com todas as regiões.
 - **Endpoints** (FastAPI):
-  - `GET /` — página de status completa (`StatusPage`).
-  - `GET /health` — saúde de todas as regiões (`Dict[str, RegionHealth]`).
-  - `GET /health/{region}` — saúde de uma região específica.
-- **Verificação HTTP real**: usa `httpx` para checar URLs-alvo por região.
+  - `GET /`, página de status completa (`StatusPage`).
+  - `GET /health`, saúde de todas as regiões (`Dict[str, RegionHealth]`).
+  - `GET /health/{region}`, saúde de uma região específica.
+- Verificação HTTP real: usa `httpx` para checar URLs-alvo por região.
 
 ## Arquitetura
 
@@ -43,7 +43,7 @@ flowchart LR
 
 ## Estrutura do repositório
 
-```
+```text
 status-page-multi-regiao/
 ├── pyproject.toml · BRIEF.md
 ├── src/status_page_multi_regiao/
@@ -77,9 +77,9 @@ PYTHONPATH=src python -m pytest tests/
 
 ## Decisões técnicas e trade-offs
 
-- **Pior estado vence** (`compute_overall`): regra padrão de status pages — uma região degradada degrada o todo.
-- **FastAPI + Pydantic**: contratos de resposta tipados (`StatusPage`, `RegionHealth`).
-- **httpx para checagens**: cliente HTTP moderno com suporte a async.
+- **Pior estado vence** (`compute_overall`): regra padrão de status pages, uma região degradada degrada o todo.
+- FastAPI + Pydantic: contratos de resposta tipados (`StatusPage`, `RegionHealth`).
+- httpx para checagens: cliente HTTP moderno com suporte a async.
 
 ## Limitações conhecidas e roadmap
 
@@ -92,4 +92,4 @@ Projeto individual de Kelvin Oliveira, construído com agentes de IA orquestrado
 
 ## Licença e autor
 
-MIT — Copyright (c) 2026 Kelvin Rebelo de Oliveira. Autor: [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfólio](https://kelvinoliveiracode.github.io/portfolio/)
+MIT. Copyright (c) 2026 Kelvin Rebelo de Oliveira. Autor: [Kelvin Oliveira](https://github.com/KelvinOliveiraCode) · [Portfólio](https://kelvinoliveiracode.github.io/portfolio/)
